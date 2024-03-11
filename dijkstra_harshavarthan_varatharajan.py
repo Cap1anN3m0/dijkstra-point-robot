@@ -1,3 +1,4 @@
+# https://github.com/Cap1anN3m0/dijkstra-point-robot - link to the git repo
 import numpy as np
 import heapq
 import cv2
