@@ -28,10 +28,10 @@ def draw_rectangle(canvas, top_left, bottom_right, color=(0, 255, 0)):
 def calculate_hex_vertices(center, size):
     vertices = []
     for i in range(6):
-        angle_deg = 60 * i - 30
-        angle_rad = math.pi / 180 * angle_deg
-        x = center[0] + size * math.cos(angle_rad)
-        y = center[1] + size * math.sin(angle_rad)
+        angle_deg = 60 * i - 30#rotate the hexagon as given
+        angle_rad = math.pi / 180 * angle_deg#convert to rad
+        x = center[0] + size * math.cos(angle_rad)#find vector x
+        y = center[1] + size * math.sin(angle_rad)#find vector y
         vertices.append((int(x), int(y)))
     return vertices
 
@@ -108,7 +108,7 @@ def dijkstra(canvas, start, goal):
         node = parents[node]#move to the parent node
     path.append(start)
     path.reverse()#reverse to start from beginning
-    #return the path
+    #return the path,cost and explored nodes
     return path, distance[goal] if goal in distance else None, explored_nodes
 
 
@@ -117,11 +117,12 @@ def backtrack(start, goal, parents):
     path = [goal]
     while path[-1] != start:
         path.append(parents[path[-1]])
-    path.reverse()
+    path.reverse()#reverse the order
     return path
 
 #function to visualize the path
 def visualize(canvas_BGR, path):
+    #create the video writer
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     video = cv2.VideoWriter('dijkstra_harshavarthan_varatharajan.mp4', fourcc, 20.0, (width, height))
     c1 = 0#counter for explored nodes
@@ -133,7 +134,7 @@ def visualize(canvas_BGR, path):
     for node in explored_nodes:
             cv2.circle(canvas_BGR, (node[0],  height - node[1] - 1 ), 0, (0, 255, 255))
             c1 = c1+1
-            if c1 % 2000 == 0:
+            if c1 % 2000 == 0:#append values in interval for fast visualization
                 video.write(canvas_BGR)
     cv2.circle(canvas_BGR, (start[0], height - start[1] ), 5, (0, 255, 0), -1)
     #draw the goal in blue
@@ -157,11 +158,12 @@ def visualize(canvas_BGR, path):
 
 # Main execution block
 if __name__ == "__main__":
+    #create the white background
     draw_clearance(canvas, (5, 5), (1195, 495), color=(255, 255, 255))
-
+    #draw the clearance for the rectangles
     for rect in rectangle:
         draw_clearance(canvas, *rect["clearance"])
-
+    #draw the solid rectangles
     for rect in rectangle:
         draw_rectangle(canvas, *rect["rectangle"])
 
@@ -172,7 +174,7 @@ if __name__ == "__main__":
     #draw the outer hexagon in black for clearance
     cv2.fillPoly(canvas, [np.array(outer_hex)], color=(0, 0, 0))
     cv2.fillPoly(canvas, [np.array(inner_hex)], color=(0, 255, 0))
-
+    #get the start and goal coordinates
     start = tuple(map(int, input("Enter start coordinates(x,y): ").split(',')))
     goal = tuple(map(int, input("Enter goal coordinates(x,y): ").split(',')))
 
@@ -180,13 +182,14 @@ if __name__ == "__main__":
     if not is_free(start[0], start[1], canvas) or not is_free(goal[0], goal[1], canvas):
         print("Enter valid coordinates, given start or goal is invalid")
     else:
+        #flip the image 
         image = cv2.flip(canvas, 0)
+        #initialize the pathplaninng algorithm and get the path, explored and cost to visualize
         path, cost, explored_nodes = dijkstra(image, start, goal)
         # canvas_BGR = cv2.cvtColor((canvas * 255).astype('uint8'), cv2.COLOR_GRAY2BGR)
         if path:
-            # print(shape(canvas_BGR))
-            print(f"Node path: {path}")
-            print(f"cost: {cost}")
-            visualize(canvas, path)
+            print(f"Node path: {path}")#print the path
+            print(f"cost: {cost}")#print the cost
+            visualize(canvas, path)#initialize the visualization
         else:
             print("cant find the path")
