@@ -123,7 +123,7 @@ def backtrack(start, goal, parents):
 #function to visualize the path
 def visualize(canvas_BGR, path):
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    video = cv2.VideoWriter('out_video.mp4', fourcc, 20.0, (width, height))
+    video = cv2.VideoWriter('dijkstra_harshavarthan_varatharajan.mp4', fourcc, 20.0, (width, height))
     c1 = 0#counter for explored nodes
     c2 = 0#counter for node path
     cv2.circle(canvas_BGR, (start[0], height-start[1]-1), 5, (0, 255, 0), -1)
